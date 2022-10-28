@@ -69,28 +69,6 @@ func GetEntries(c *gin.Context) {
 	c.JSON(http.StatusOK, entries)
 }
 
-func GetEntryByPhone(c *gin.Context) {
-	phone := c.Params.ByName("id")
-	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
-	var entries []bson.M
-	cursor, err := entryCollection.Find(ctx, bson.M{"phone": phone})
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		fmt.Println(err)
-		return
-	}
-	if err = cursor.All(ctx, &entries); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		fmt.Println(err)
-		return
-	}
-	defer cancel()
-
-	fmt.Println(entries)
-	c.JSON(http.StatusOK, entries)
-}
-
 func GetEntryById(c *gin.Context) {
 	EntryID := c.Params.ByName("id")
 	docID, _ := primitive.ObjectIDFromHex(EntryID)
